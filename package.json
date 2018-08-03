@@ -2,9 +2,9 @@
   "name": "plantr",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "seed.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "DATBASE_URL=postgres://localhost:5432/plantr nodemon node_modules/mocha/bin/mocha"
   },
   "keywords": [],
   "author": "",
