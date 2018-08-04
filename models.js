@@ -61,7 +61,7 @@ return Promise.all([
       plantedOn: new Date()
     })
 ])
-  .then(([carrots,beets,potatoes])=> {
+  .then(([carrots,beets])=> {
     return Promise.all([
       Gardener.create({
         name: 'moe',
@@ -76,7 +76,7 @@ return Promise.all([
       Gardener.create({
         name: 'curly',
         age: 88,
-        favoriteVegetableId: potatoes.id
+        favoriteVegetableId: beets.id
       })
     ])
       .then(([moe,larry,curly])=> {
