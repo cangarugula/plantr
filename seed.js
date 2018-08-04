@@ -1,7 +1,9 @@
 const db = require('./models')
 
-db.sync({force:true})
+return db.sync()
   .then(()=> {
+    return db.seed()
+  }).then(()=> {
     console.log('syncing the database')
   })
   .catch(error => {

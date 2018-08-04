@@ -38,60 +38,79 @@ Vegetable.belongsToMany(Plot, {through: 'vegetable_plot'});
 Plot.belongsToMany(Vegetable, {through: 'vegetable_plot'});
 Gardener.belongsTo(Vegetable, {as: 'favorite_vegetable'})
 
+const sync = ()=> {
+  return db.sync({force:true})
+}
 
-let vegetables = [
-  Vegetable.create({
-    name: 'carrots',
-    color: 'orange',
-    plantedOn: new Date()
-  }),
-  Vegetable.create({
-    name: 'beets',
-    color: 'red',
-    plantedOn: new Date()
-  })
-]
+const seed =  ()=> {
 
-let gardeners = [
-  Gardener.create({
-    name: 'moe',
-    age: 60
-  }),
-  Gardener.create({
-    name: 'larry',
-    age: 70
-  }),
-  Gardener.create({
-    name: 'curly',
-    age: 88
-  })
-]
-
-let plots = [
-  Plot.create({
-    size: 30,
-    shaded: true
-  }),
-  Plot.create({
-    size: 40,
-    shaded: false
-  })
-]
-
-console.log(gardeners)
-
-
-return Promise.all(vegetables)
-  .then(()=> {
-    return Promise.all(gardeners)
-      .then(()=> {
-        return Promise.all(plots)
+return Promise.all([
+    Vegetable.create({
+      name: 'carrots',
+      color: 'orange',
+      plantedOn: new Date()
+    }),
+    Vegetable.create({
+      name: 'beets',
+      color: 'red',
+      plantedOn: new Date()
+    }),
+    Vegetable.create({
+      name: 'potatoes',
+      color: 'brown',
+      plantedOn: new Date()
+    })
+])
+  .then(([carrots,beets,potatoes])=> {
+    return Promise.all([
+      Gardener.create({
+        name: 'moe',
+        age: 60,
+        favoriteVegetableId: carrots.id
+      }),
+      Gardener.create({
+        name: 'larry',
+        age: 70,
+        favoriteVegetableId: beets.id
+      }),
+      Gardener.create({
+        name: 'curly',
+        age: 88,
+        favoriteVegetableId: potatoes.id
+      })
+    ])
+      .then(([moe,larry,curly])=> {
+        return Promise.all([
+          Plot.create({
+            size: 30,
+            shaded: true,
+            gardenerId: moe.id
+          }),
+          Plot.create({
+            size: 40,
+            shaded: false,
+            gardenerId: larry.id
+          }),
+          Plot.create({
+            size: 10,
+            shaded: true,
+            gardenerId: curly.id
+          })
+        ])
       })
   })
   .catch( error => {
     console.log(error)
   })
+}
 
+const close = ()=> {
+  return db.close()
+}
 
-module.exports = db
+module.exports = {
+  sync,
+  seed,
+  close
+}
 
